@@ -1,0 +1,35 @@
+### 📝 Présentation Générale du Projet
+Ce projet est une plateforme web de mise en relation (type job board / portail de recrutement), conçue pour connecter des candidats (vraisemblablement des étudiants) avec des entreprises. Il s'agit d'une application "Full-Stack" séparée en deux parties distinctes :
+*   Le Frontend (côté client) : Développé en React.js (utilisant Vite comme bundler) et stylisé avec Tailwind CSS. 
+*   Le Backend (côté serveur) : Développé en PHP natif fournissant une API RESTful, couplé à une base de données (probablement MySQL, avec le fichier data.sql).
+
+---
+
+### ⚙️ Les Fonctionnalités Principales (Ce que fait le projet)
+
+Le système est conçu autour de deux profils d'utilisateurs distincts : les Étudiants/Candidats et les Entreprises. 
+
+Voici les tâches et fonctionnalités gérées par l'application, déduites de vos fichiers :
+
+#### 1. Gestion des Utilisateurs et de l'Authentification
+*   Inscription et Connexion : Les utilisateurs peuvent créer un compte (Register.jsx, register.php) et se connecter (Login.jsx, login.php).
+*   Gestion de session : Le système maintient la session de l'utilisateur ouverte de manière sécurisée (session.php, logout.php, me.php).
+*   Gestion du profil : Les utilisateurs peuvent consulter et modifier leurs informations personnelles (profile.php, update_profile.php), changer leur mot de passe (change_password.php), et modifier leurs paramètres/préférences d'application (Settings.jsx, update_preferences.php).
+
+#### 2. Système de Gestion des Offres (Emplois / Stages)
+*   Côté Entreprise : Les recruteurs ont la possibilité de créer et publier de nouvelles annonces (Create_offer.jsx, create_offer.php) et de consulter exclusivement les offres qu'ils ont postées (CompanyOffers.jsx, get_company_offers.php).
+*   Côté Candidats (Étudiants) : Les candidats peuvent parcourir un tableau d'affichage des offres disponibles (StudentOffers.jsx, get_offers.php).
+*   Une fonctionnalité de recherche avancée avec saisie semi-automatique (autocomplétion) est présente pour faciliter la recherche d'offres (AutocompleteSelect.jsx).
+
+#### 3. Gestion des Candidatures (Le process de recrutement)
+*   Postuler à une offre : Un candidat peut soumettre sa candidature pour une offre spécifique (ApplyForm.jsx, apply.php). Cela implique fort probablement l'envoi de documents (CV, lettres de motivation) qui sont stockés dans le dossier /uploads/.
+*   Suivi et Gestion des candidatures : Les entreprises peuvent voir qui a postulé à leurs offres (Applications.jsx, applications.php).
+*   Mise à jour du statut : Les recruteurs peuvent changer le statut d'une candidature (ex: Accepter, Refuser, En cours d'examen) via l'interface, qui communique avec update_application_status.php.
+
+#### 4. Fonctionnalités Transverses et Interface Utilisateur (UI/UX)
+*   Notifications : Un système pour avertir les utilisateurs des changements de statut, des nouvelles offres ou des messages (Notifications.jsx).
+*   Multilinguisme (Internationalisation) : L'application est capable de changer de langue (ex: Français/Anglais) grâce à la configuration i18n.jsx.
+*   Thème Personnalisable : Le projet intègre un gestionnaire de thème (ThemeContext.jsx), permettant probablement aux utilisateurs de basculer entre un "Mode Clair" (Light mode) et un "Mode Sombre" (Dark mode).
+
+### 💡 En résumé :
+Votre projet est un portail complet de recrutement étudiant-entreprise. Il gère le flux entier : de l'inscription des utilisateurs à la publication d'offres par les entreprises, jusqu'au dépôt de candidature par les étudiants et à l'acceptation (ou refus) de ces candidatures par les recruteurs.
