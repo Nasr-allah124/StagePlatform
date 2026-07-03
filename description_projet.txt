@@ -1,35 +1,44 @@
 ### 📝 Présentation Générale du Projet
-Ce projet est une plateforme web de mise en relation (type job board / portail de recrutement), conçue pour connecter des candidats (vraisemblablement des étudiants) avec des entreprises. Il s'agit d'une application "Full-Stack" séparée en deux parties distinctes :
-*   Le Frontend (côté client) : Développé en React.js (utilisant Vite comme bundler) et stylisé avec Tailwind CSS. 
-*   Le Backend (côté serveur) : Développé en PHP natif fournissant une API RESTful, couplé à une base de données (probablement MySQL, avec le fichier data.sql).
+Ce projet est une plateforme web de mise en relation de type job board / portail de recrutement, conçue pour connecter des candidats avec des entreprises. L’application est structurée en deux parties distinctes :
+*   Le Frontend (côté client) : développé en React.js avec Vite, stylisé avec Tailwind CSS, et enrichi par des composants modernes pour la navigation, les formulaires, les notifications et les statistiques.
+*   Le Backend (côté serveur) : développé en PHP natif sous forme d’API RESTful, avec une base de données relationnelle, probablement MySQL, décrite dans `data.sql`.
 
 ---
 
-### ⚙️ Les Fonctionnalités Principales (Ce que fait le projet)
+### ⚙️ Fonctionnalités Principales
 
-Le système est conçu autour de deux profils d'utilisateurs distincts : les Étudiants/Candidats et les Entreprises. 
+Le système est organisé autour de deux profils d’utilisateurs principaux : les candidats et les entreprises.
 
-Voici les tâches et fonctionnalités gérées par l'application, déduites de vos fichiers :
+#### 1. Gestion des utilisateurs et de l’authentification
+*   Inscription et connexion : les utilisateurs peuvent créer un compte et se connecter via les écrans d’authentification et les API associées (`Register.jsx`, `Login.jsx`, `register.php`, `login.php`).
+*   Vérification de session : l’application détecte automatiquement l’état de connexion grâce à `HomeGate.jsx` et à l’API `me.php`, puis redirige vers l’accueil approprié.
+*   Récupération d’accès : les écrans et endpoints de mot de passe oublié / réinitialisation sont présents (`ForgotPassword.jsx`, `ResetPassword.jsx`, `forgot-password.php`, `reset-password.php`).
+*   Profil et préférences : les utilisateurs peuvent consulter et mettre à jour leurs informations, changer leur mot de passe et ajuster leurs préférences (`profile.php`, `update_profile.php`, `change_password.php`, `Settings.jsx`, `update_preferences.php`).
 
-#### 1. Gestion des Utilisateurs et de l'Authentification
-*   Inscription et Connexion : Les utilisateurs peuvent créer un compte (Register.jsx, register.php) et se connecter (Login.jsx, login.php).
-*   Gestion de session : Le système maintient la session de l'utilisateur ouverte de manière sécurisée (session.php, logout.php, me.php).
-*   Gestion du profil : Les utilisateurs peuvent consulter et modifier leurs informations personnelles (profile.php, update_profile.php), changer leur mot de passe (change_password.php), et modifier leurs paramètres/préférences d'application (Settings.jsx, update_preferences.php).
+#### 2. Gestion des offres d’emploi / stage
+*   Publication d’offres côté entreprise : les recruteurs peuvent créer une nouvelle offre et gérer leurs annonces (`Create_offer.jsx`, `create_offer.php`).
+*   Consultation des offres : les candidats accèdent à la liste des offres disponibles (`Offers.jsx`, `get_offers.php`).
+*   Gestion des offres de l’entreprise : le backend expose aussi la récupération des offres d’une entreprise et la suppression d’une offre (`get_company_offers.php`, `delete_offer.php`).
+*   Recherche améliorée : une composante d’autocomplétion facilite la recherche et le filtrage des offres (`AutocompleteSelect.jsx`).
 
-#### 2. Système de Gestion des Offres (Emplois / Stages)
-*   Côté Entreprise : Les recruteurs ont la possibilité de créer et publier de nouvelles annonces (Create_offer.jsx, create_offer.php) et de consulter exclusivement les offres qu'ils ont postées (CompanyOffers.jsx, get_company_offers.php).
-*   Côté Candidats (Étudiants) : Les candidats peuvent parcourir un tableau d'affichage des offres disponibles (StudentOffers.jsx, get_offers.php).
-*   Une fonctionnalité de recherche avancée avec saisie semi-automatique (autocomplétion) est présente pour faciliter la recherche d'offres (AutocompleteSelect.jsx).
+#### 3. Gestion des candidatures et du recrutement
+*   Postuler à une offre : un candidat peut soumettre sa candidature à une offre précise (`ApplyForm.jsx`, `apply.php`), avec prise en charge de documents liés à la candidature stockés dans `/uploads/`.
+*   Suivi des candidatures : les entreprises visualisent les candidatures reçues (`Applications.jsx`, `applications.php`).
+*   Mise à jour des statuts : les recruteurs peuvent accepter, refuser ou laisser en attente une candidature via `update_application_status.php`.
 
-#### 3. Gestion des Candidatures (Le process de recrutement)
-*   Postuler à une offre : Un candidat peut soumettre sa candidature pour une offre spécifique (ApplyForm.jsx, apply.php). Cela implique fort probablement l'envoi de documents (CV, lettres de motivation) qui sont stockés dans le dossier /uploads/.
-*   Suivi et Gestion des candidatures : Les entreprises peuvent voir qui a postulé à leurs offres (Applications.jsx, applications.php).
-*   Mise à jour du statut : Les recruteurs peuvent changer le statut d'une candidature (ex: Accepter, Refuser, En cours d'examen) via l'interface, qui communique avec update_application_status.php.
+#### 4. Messagerie, notifications et suivi temps réel
+*   Messages entre utilisateurs : une messagerie applicative est disponible via `send_message.php` et `get_messages.php`, avec affichage dans l’interface des notifications.
+*   Notifications centralisées : les notifications liées aux offres et aux interactions sont récupérées par `get_notifications.php` et affichées dans `Notifications.jsx`.
+*   Réponse rapide : l’interface de notifications permet de répondre directement à un message depuis l’écran dédié.
 
-#### 4. Fonctionnalités Transverses et Interface Utilisateur (UI/UX)
-*   Notifications : Un système pour avertir les utilisateurs des changements de statut, des nouvelles offres ou des messages (Notifications.jsx).
-*   Multilinguisme (Internationalisation) : L'application est capable de changer de langue (ex: Français/Anglais) grâce à la configuration i18n.jsx.
-*   Thème Personnalisable : Le projet intègre un gestionnaire de thème (ThemeContext.jsx), permettant probablement aux utilisateurs de basculer entre un "Mode Clair" (Light mode) et un "Mode Sombre" (Dark mode).
+#### 5. Tableau de bord entreprise et statistiques
+*   Dashboard analytique : un tableau de bord entreprise est disponible (`Dashboard.jsx`, `get_analytics.php`) avec des indicateurs comme le nombre total de candidatures, les acceptations, les refus et les candidatures en attente.
+*   Visualisation des données : des graphiques et résumés permettent de suivre la performance des offres et d’identifier l’offre la plus populaire.
 
-### 💡 En résumé :
-Votre projet est un portail complet de recrutement étudiant-entreprise. Il gère le flux entier : de l'inscription des utilisateurs à la publication d'offres par les entreprises, jusqu'au dépôt de candidature par les étudiants et à l'acceptation (ou refus) de ces candidatures par les recruteurs.
+#### 6. Interface utilisateur et expérience
+*   Multilinguisme : l’application est préparée pour l’internationalisation via `i18n.jsx`.
+*   Thème clair/sombre : un contexte de thème est intégré via `ThemeContext.jsx`.
+*   Parcours d’accueil adaptatif : l’utilisateur non connecté voit la landing page, tandis qu’un utilisateur authentifié est redirigé vers l’espace applicatif.
+
+### 💡 En résumé
+Votre projet est une plateforme complète de recrutement entre candidats et entreprises. Il couvre tout le cycle métier : authentification, publication d’offres, recherche et consultation, dépôt de candidature, suivi des statuts, messagerie, notifications et pilotage via un tableau de bord analytique côté entreprise.

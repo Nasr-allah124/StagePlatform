@@ -46,7 +46,8 @@ try {
                 applications.cv_path,
                 internships.title,
                 internships.city,
-                companies.company_name
+                companies.company_name,
+                companies.user_id as company_user_id
             FROM applications
             JOIN internships
                 ON applications.internship_id = internships.id
@@ -95,7 +96,8 @@ try {
                 internships.id AS internship_id,
                 internships.title,
                 internships.city,
-                companies.company_name
+                companies.company_name,
+                applications.student_id
             FROM applications
             JOIN internships
                 ON applications.internship_id = internships.id

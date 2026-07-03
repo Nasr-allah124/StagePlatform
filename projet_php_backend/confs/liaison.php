@@ -16,11 +16,15 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
   exit;
 }
 
-$host = "db";             // "db" est le nom du service dans ton docker-compose
+$host = "127.0.0.1";             // "db" est le nom du service dans ton docker-compose
 $dbName = "site_paltforme";
 $user = "root";
-$pass = "root";           // Le mot de passe que tu as mis dans le docker-compose
-
+$pass = "root";    
+//        // Le mot de passe que tu as mis dans le docker-compose
+// $host = "sql100.infinityfree.com";
+// $db   = "if0_41622395_site_paltforme";
+// $user = "if0_41622395";
+// $pass = "nasrzou2006";
 try {
   $pdo = new PDO(
     "mysql:host={$host};dbname={$dbName};charset=utf8mb4",

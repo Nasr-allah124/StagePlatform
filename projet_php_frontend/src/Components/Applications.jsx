@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next"; // Import
+import { useTranslation } from "react-i18next";
 import {
   FileText,
   User,
@@ -13,13 +13,17 @@ import {
 } from "lucide-react";
 
 export default function Applications() {
-  const { t } = useTranslation(); // Hook de traduction
-  const navigate = useNavigate(); // Hook pour la navigation
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const API = "http://localhost:8000/api";
 
   const [applications, setApplications] = useState([]);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [messageText, setMessageText] = useState("");
+  const [showMessageForm, setShowMessageForm] = useState(null);
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     loadApplications();
@@ -64,9 +68,55 @@ export default function Applications() {
     }
   };
 
+  const handleSendMessage = async (applicationId, receiverId) => {
+    if (!messageText.trim()) return;
+
+    setSendingMessage(true);
+    try {
+      const res = await fetch(`${API}/send_message.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          application_id: applicationId,
+          receiver_id: receiverId,
+          message: messageText,
+        }),
+        credentials: "include",
+      });
+
+      const data = await res.json();
+      console.log("Response from send_message.php:", data, "Status:", res.status);
+      
+      if (data.success) {
+        setMessageText("");
+        setShowMessageForm(null);
+        setSuccessMessage(t("message_sent", "Message envoyé avec succès!"));
+        setTimeout(() => setSuccessMessage(null), 3000);
+      } else {
+        const errorMsg = data.error || "Erreur lors de l'envoi";
+        console.error("Error from backend:", errorMsg);
+        setSuccessMessage(errorMsg);
+        setTimeout(() => setSuccessMessage(null), 5000);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setSuccessMessage(t("message_error", "Erreur lors de l'envoi"));
+      setTimeout(() => setSuccessMessage(null), 5000);
+    } finally {
+      setSendingMessage(false);
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 px-6 py-10 transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
+        {/* NOTIFICATION DE SUCCÈS */}
+        {successMessage && (
+          <div className="fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg animate-bounce z-50">
+            {successMessage}
+          </div>
+        )}
         {/* BOUTON RETOUR */}
         <button
           onClick={() => navigate(-1)}
@@ -201,6 +251,72 @@ export default function Applications() {
                     >
                       {t("reject_btn")}
                     </button>
+                  </div>
+                )}
+
+                {role === "company" && app.status !== "pending" && (
+                  <div className="mt-6 border-t dark:border-slate-800 pt-6">
+                    <button
+                      onClick={() => setShowMessageForm(showMessageForm === app.id ? null : app.id)}
+                      className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 py-3 font-bold text-white transition-colors"
+                    >
+                      {showMessageForm === app.id ? t("close_form", "Fermer") : t("send_message_btn", "Envoyer un message")}
+                    </button>
+                    {showMessageForm === app.id && (
+                      <div className="mt-4 space-y-3 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <textarea
+                          value={messageText}
+                          onChange={(e) => setMessageText(e.target.value)}
+                          className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder={t("your_message_placeholder", "Votre message...")}
+                          rows="4"
+                        ></textarea>
+                        <button
+                          onClick={() => handleSendMessage(app.id, app.student_id)}
+                          disabled={sendingMessage || !messageText.trim()}
+                          className={`w-full rounded-xl py-2 font-bold text-white transition-colors ${
+                            sendingMessage || !messageText.trim()
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-green-600 hover:bg-green-700"
+                          }`}
+                        >
+                          {sendingMessage ? t("sending", "Envoi en cours...") : t("send_btn", "Envoyer")}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {role === "student" && app.status !== "pending" && (
+                  <div className="mt-6 border-t dark:border-slate-800 pt-6">
+                    <button
+                      onClick={() => setShowMessageForm(showMessageForm === app.id ? null : app.id)}
+                      className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 py-3 font-bold text-white transition-colors"
+                    >
+                      {showMessageForm === app.id ? t("close_form", "Fermer") : t("reply_btn", "Répondre")}
+                    </button>
+                    {showMessageForm === app.id && (
+                      <div className="mt-4 space-y-3 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <textarea
+                          value={messageText}
+                          onChange={(e) => setMessageText(e.target.value)}
+                          className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder={t("your_response_placeholder", "Votre réponse...")}
+                          rows="4"
+                        ></textarea>
+                        <button
+                          onClick={() => handleSendMessage(app.id, app.company_user_id)}
+                          disabled={sendingMessage || !messageText.trim()}
+                          className={`w-full rounded-xl py-2 font-bold text-white transition-colors ${
+                            sendingMessage || !messageText.trim()
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-green-600 hover:bg-green-700"
+                          }`}
+                        >
+                          {sendingMessage ? t("sending", "Envoi en cours...") : t("send_btn", "Envoyer")}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

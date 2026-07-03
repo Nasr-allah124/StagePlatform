@@ -93,13 +93,14 @@ export default function Create_offer() {
   // Validation
   const validate = () => {
     const newErrors = {};
-    if (!form.title?.trim() || form.title.length < 5) newErrors.title = t("error_title_short");
+    if (!form.title?.trim() || form.title.length < 3) newErrors.title = t("error_title_short", "Le titre doit faire au moins 3 caractères");
     if (!form.city?.trim()) newErrors.city = t("error_city_req");
     if (!form.duration) newErrors.duration = t("error_duration_req");
     if (!form.sector) newErrors.sector = t("error_sector_req");
     if (!form.description?.trim() || form.description.length < 50) newErrors.description = t("error_desc_min");
     if (!form.requirements?.trim() || form.requirements.length < 20) newErrors.requirements = t("error_req_min");
     
+    console.log("Validation check:", { hasErrors: Object.keys(newErrors).length > 0, errors: newErrors });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -126,27 +127,51 @@ export default function Create_offer() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    console.log("handleSubmit called");
+    console.log("Form data before validation:", form);
     
+    if (!validate()) {
+      console.log("Validation FAILED - Errors:", errors);
+      return;
+    }
+    
+    console.log("Validation PASSED");
     setIsSubmitting(true);
     await new Promise(r => setTimeout(r, 1500));
 
     try {
+      // Convertir les valeurs du formulaire au format attendu par le backend
+      const dataToSend = {
+        ...form,
+        remote: form.remote === "full" ? "remote" : form.remote === "hybrid" ? "hybrid" : "on-site"
+      };
+
+      console.log("Sending data to backend:", dataToSend);
+
       const res = await fetch("http://localhost:8000/api/create_offer.php", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(dataToSend),
       });
+
+      console.log("Response status:", res.status);
       const data = await res.json();
+      console.log("Backend response:", data);
+
       if (data.ok) {
+        console.log("SUCCESS - Showing success screen");
         setShowSuccess(true);
         setTimeout(() => navigate("/offers"), 2500);
       } else {
-        setErrors({ global: data.error || t("submission_failed") });
+        const errorMsg = data.error || t("submission_failed");
+        console.error("Error from backend:", errorMsg);
+        setErrors({ global: errorMsg });
+        alert("❌ Erreur: " + errorMsg);
       }
     } catch (err) {
-      setErrors({ global: t("network_error") });
+      console.error("Fetch error:", err);
+      alert("❌ Erreur réseau: " + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -183,6 +208,15 @@ export default function Create_offer() {
       </div>
 
       <div className="relative max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 mb-8 px-4 py-2 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          {t("back")}
+        </button>
+
         <div className="mb-12 text-center lg:text-left lg:flex lg:items-end lg:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider mb-4">

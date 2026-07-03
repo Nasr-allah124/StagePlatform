@@ -254,22 +254,6 @@ export default function Login() {
                 )}
               </button>
 
-              {/* Divider */}
-              <div className="flex items-center gap-3 py-1">
-                <div className="h-px flex-1 bg-slate-200" />
-                <span className="text-xs text-slate-500">OU</span>
-                <div className="h-px flex-1 bg-slate-200" />
-              </div>
-
-              {/* Google */}
-              <button
-                type="button"
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 font-semibold text-slate-800 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100"
-                onClick={() => alert("Plus tard: Google OAuth")}
-              >
-                Continuer avec Google
-              </button>
-
               <p className="pt-2 text-center text-sm text-slate-600">
                 Pas de compte ?{" "}
                 <Link

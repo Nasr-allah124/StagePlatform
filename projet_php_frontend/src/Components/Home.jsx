@@ -138,11 +138,19 @@ export default function Home({ user }) {
               />
 
               {role === "company" && (
-                <SideLink
-                  to="/company/create-offer"
-                  icon={<PlusCircle size={16} />}
-                  label={t("nav_publish")}
-                />
+                <>
+                  <SideLink
+                    to="/company/create-offer"
+                    icon={<PlusCircle size={16} />}
+                    label={t("nav_publish")}
+                  />
+
+                  <SideLink
+                    to="/company/dashboard"
+                    icon={<LayoutDashboard size={16} />}
+                    label={t("nav_analytics")}
+                  />
+                </>
               )}
 
               <SideLink
@@ -179,7 +187,7 @@ export default function Home({ user }) {
                   : t("tip_student")}
               </p>
               <Link
-                to={role === "company" ? "/offers" : "/profile"}
+                to={role === "company" ? "/offers" : "/settings?tab=profile"}
                 className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
               >
                 {role === "company"

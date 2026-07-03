@@ -57,6 +57,7 @@ const resources = {
       "nav_offers": "Offres de stage",
       "nav_my_offers": "Mes offres",
       "nav_publish": "Publier une offre",
+      "nav_analytics": "Analytics",
       "nav_apps_received": "Candidatures reçues",
       "nav_my_apps": "Mes candidatures",
       "nav_profile": "Mon Profil",
@@ -254,7 +255,24 @@ const resources = {
       "status_pending": "En attente",
       "status_accepted": "Acceptée",
       "status_rejected": "Refusée",
-      "status_in_progress": "En cours"
+      "status_in_progress": "En cours",
+
+      // --- DASHBOARD ANALYTICS ---
+      "analytics_dashboard": "Tableau de Bord Analytics",
+      "company_insights": "Aperçu de vos offres et candidatures",
+      "refresh": "Actualiser",
+      "total_applications": "Total Candidatures",
+      "accepted": "Acceptées",
+      "rejected": "Refusées",
+      "pending": "En Attente",
+      "most_popular_offer": "Offre la Plus Populaire",
+      "applications": "candidatures",
+      "status_distribution": "Répartition des Statuts",
+      "applications_by_offer": "Candidatures par Offre",
+      "offers_detail": "Détail des Offres",
+      "error": "Erreur",
+      "loading": "Chargement...",
+      "no_data": "Pas de données disponibles"
     }
   },
   en: {
@@ -311,6 +329,7 @@ const resources = {
       "nav_offers": "Internship Offers",
       "nav_my_offers": "My Offers",
       "nav_publish": "Post an Offer",
+      "nav_analytics": "Analytics",
       "nav_apps_received": "Applications Received",
       "nav_my_apps": "My Applications",
       "nav_profile": "My Profile",
@@ -508,7 +527,24 @@ const resources = {
       "status_pending": "Pending",
       "status_accepted": "Accepted",
       "status_rejected": "Rejected",
-      "status_in_progress": "In Progress"
+      "status_in_progress": "In Progress",
+
+      // --- DASHBOARD ANALYTICS ---
+      "analytics_dashboard": "Analytics Dashboard",
+      "company_insights": "Overview of your offers and applications",
+      "refresh": "Refresh",
+      "total_applications": "Total Applications",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "pending": "Pending",
+      "most_popular_offer": "Most Popular Offer",
+      "applications": "applications",
+      "status_distribution": "Status Distribution",
+      "applications_by_offer": "Applications by Offer",
+      "offers_detail": "Offers Details",
+      "error": "Error",
+      "loading": "Loading...",
+      "no_data": "No data available"
     }
   }
 };

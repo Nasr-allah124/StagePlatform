@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: platforme_app
+    ports:
+      - "8010:80"      # au lieu de 8000
+      - "3310:3306"    # au lieu de 3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - uploads_data:/var/www/html/uploads
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+  uploads_data:

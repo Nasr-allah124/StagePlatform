@@ -41,7 +41,7 @@ try {
                 i.title,
                 i.description,
                 i.city,
-                i.level,
+                i.sector,
                 i.duration,
                 c.company_name
             FROM internships i
@@ -79,7 +79,7 @@ try {
                 i.title,
                 i.description,
                 i.city,
-                i.level,
+                i.sector,
                 i.duration,
                 c.company_name
             FROM internships i

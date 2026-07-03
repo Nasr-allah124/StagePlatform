@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next"; // Import
+import { useTranslation } from "react-i18next";
 import {
   Bell,
   ArrowLeft,
@@ -13,40 +13,99 @@ import {
 } from "lucide-react";
 
 export default function Notifications() {
-  const { t } = useTranslation(); // Hook de traduction
+  const { t } = useTranslation();
+  const [items, setItems] = useState([]);
+  const [replyText, setReplyText] = useState("");
+  const [openReplyForm, setOpenReplyForm] = useState(null);
+  const [sendingReply, setSendingReply] = useState(false);
+  const API = "http://localhost:8000/api";
 
-  // Mock notifications
-  const initial = useMemo(
-    () => [
-      {
-        id: 1,
-        type: "status",
-        title: t("notif_status_title"), // Traduction dynamique
-        body: t("notif_status_body"),
-        time: t("time_2h"),
-        read: false,
-      },
-      {
-        id: 2,
-        type: "offer",
-        title: t("notif_offer_title"),
-        body: t("notif_offer_body"),
-        time: t("time_today"),
-        read: false,
-      },
-      {
-        id: 3,
-        type: "message",
-        title: t("notif_msg_title"),
-        body: t("notif_msg_body"),
-        time: t("time_yesterday"),
-        read: true,
-      },
-    ],
-    [t] // Ajout de t dans les dépendances
-  );
+  useEffect(() => {
+    loadMessages();
+  }, [t]);
 
-  const [items, setItems] = useState(initial);
+  async function loadMessages() {
+    try {
+      // Charger les messages
+      const messagesRes = await fetch(`${API}/get_messages.php`, {
+        credentials: "include",
+      });
+      const messagesData = await messagesRes.json();
+      
+      const formattedMessages = [];
+      if (Array.isArray(messagesData)) {
+        formattedMessages.push(...messagesData.map(msg => ({
+          id: `msg-${msg.id}`,
+          type: 'message',
+          title: `${t('new_message_from', 'Nouveau message de')} ${msg.sender_email}`,
+          body: msg.message,
+          time: new Date(msg.created_at).toLocaleString(),
+          created_at: msg.created_at,
+          read: msg.is_read,
+          application_id: msg.application_id,
+          sender_id: msg.sender_id,
+        })));
+      }
+
+      // Charger les notifications d'offres
+      const notificationsRes = await fetch(`${API}/get_notifications.php`, {
+        credentials: "include",
+      });
+      const notificationsData = await notificationsRes.json();
+      
+      if (Array.isArray(notificationsData)) {
+        formattedMessages.push(...notificationsData.map(notif => ({
+          id: `notif-${notif.id}`,
+          type: 'offer',
+          title: notif.message,
+          body: notif.offer_title ? `Consultez l'offre : ${notif.offer_title}` : '',
+          time: new Date(notif.created_at).toLocaleString(),
+          created_at: notif.created_at,
+          read: notif.is_read,
+          internship_id: notif.internship_id,
+        })));
+      }
+
+      // Trier par date décroissante
+      formattedMessages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      setItems(formattedMessages);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const handleSendReply = async (messageId, senderId, applicationId) => {
+    if (!replyText.trim()) return;
+
+    setSendingReply(true);
+    try {
+      const res = await fetch(`${API}/send_message.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          application_id: applicationId,
+          receiver_id: senderId,
+          message: replyText,
+        }),
+        credentials: "include",
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setReplyText("");
+        setOpenReplyForm(null);
+        // Recharger les messages
+        loadMessages();
+      } else {
+        alert(data.error || t("message_error", "Erreur lors de l'envoi"));
+      }
+    } catch (err) {
+      console.error("Erreur lors de l'envoi du message", err);
+      alert(t("message_error", "Erreur lors de l'envoi"));
+    } finally {
+      setSendingReply(false);
+    }
+  };
 
   const unreadCount = items.filter((n) => !n.read).length;
 
@@ -140,6 +199,14 @@ export default function Notifications() {
                         </div>
 
                         <div className="mt-3 flex flex-wrap gap-2">
+                          {n.type === 'message' && (
+                            <button
+                              onClick={() => setOpenReplyForm(openReplyForm === n.id ? null : n.id)}
+                              className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                            >
+                              {t('reply_btn', 'Répondre')}
+                            </button>
+                          )}
                           <button
                             onClick={() => toggleRead(n.id)}
                             className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
@@ -154,6 +221,41 @@ export default function Notifications() {
                             {t("delete_btn_notif")}
                           </button>
                         </div>
+
+                        {/* FORMULAIRE DE RÉPONSE */}
+                        {openReplyForm === n.id && n.type === 'message' && (
+                          <div className="mt-4 space-y-3 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <textarea
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder={t("your_response_placeholder", "Votre réponse...")}
+                              rows="3"
+                            ></textarea>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleSendReply(n.id, n.sender_id, n.application_id)}
+                                disabled={sendingReply || !replyText.trim()}
+                                className={`flex-1 rounded-xl py-2 font-bold text-white transition-colors ${
+                                  sendingReply || !replyText.trim()
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-green-600 hover:bg-green-700"
+                                }`}
+                              >
+                                {sendingReply ? t("sending", "Envoi en cours...") : t("send_btn", "Envoyer")}
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setOpenReplyForm(null);
+                                  setReplyText("");
+                                }}
+                                className="flex-1 rounded-xl bg-slate-200 dark:bg-slate-700 py-2 font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
+                              >
+                                {t("cancel_btn", "Annuler")}
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
 
