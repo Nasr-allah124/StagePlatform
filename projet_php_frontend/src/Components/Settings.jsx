@@ -22,7 +22,7 @@ export default function Settings() {
   const API_BASE_URL = useMemo(
     () =>
       (
-        import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api"
+        import.meta.env.VITE_API_BASE_URL || "http://localhost:8010/api"
       ).replace(/\/$/, ""),
     [],
   );

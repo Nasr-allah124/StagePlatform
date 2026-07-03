@@ -17,7 +17,7 @@ export default function ApplyForm() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const API = "http://localhost:8000/api";
+  const API = "http://localhost:8010/api";
 
   const [form, setForm] = useState({
     name: "",

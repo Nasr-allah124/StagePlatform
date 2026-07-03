@@ -28,7 +28,7 @@ export default function Dashboard() {
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API = "http://localhost:8000/api";
+  const API = "http://localhost:8010/api";
 
   useEffect(() => {
     loadAnalytics();

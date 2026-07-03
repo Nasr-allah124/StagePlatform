@@ -15,7 +15,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-const API = "http://localhost:8000/api";
+const API = "http://localhost:8010/api";
 
 export default function Offers() {
   const { t } = useTranslation(); // Initialisation de la traduction

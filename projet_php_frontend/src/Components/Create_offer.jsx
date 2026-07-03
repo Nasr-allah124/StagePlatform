@@ -148,7 +148,7 @@ export default function Create_offer() {
 
       console.log("Sending data to backend:", dataToSend);
 
-      const res = await fetch("http://localhost:8000/api/create_offer.php", {
+      const res = await fetch("http://localhost:8010/api/create_offer.php", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

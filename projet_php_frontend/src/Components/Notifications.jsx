@@ -18,7 +18,7 @@ export default function Notifications() {
   const [replyText, setReplyText] = useState("");
   const [openReplyForm, setOpenReplyForm] = useState(null);
   const [sendingReply, setSendingReply] = useState(false);
-  const API = "http://localhost:8000/api";
+  const API = "http://localhost:8010/api";
 
   useEffect(() => {
     loadMessages();

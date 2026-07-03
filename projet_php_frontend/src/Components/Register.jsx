@@ -347,7 +347,7 @@ export default function Register() {
               },
       };
 
-     const API_BASE_URL = "http://localhost:8000/api";
+     const API_BASE_URL = "http://localhost:8010/api";
 
       const res = await fetch(`${API_BASE_URL}/register.php`, {
         method: "POST",

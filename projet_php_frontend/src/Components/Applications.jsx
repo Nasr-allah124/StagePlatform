@@ -15,7 +15,7 @@ import {
 export default function Applications() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const API = "http://localhost:8000/api";
+  const API = "http://localhost:8010/api";
 
   const [applications, setApplications] = useState([]);
   const [role, setRole] = useState(null);
@@ -51,7 +51,7 @@ export default function Applications() {
   const updateStatus = async (id, newStatus) => {
     try {
       const res = await fetch(
-        `http://localhost:8000/api/update_application_status.php`,
+        `http://localhost:8010/api/update_application_status.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -225,7 +225,7 @@ export default function Applications() {
                 {app.cv_path && (
                   <div className="mt-5">
                     <a
-                      href={`http://localhost:8000/${app.cv_path}`}
+                      href={`http://localhost:8010/${app.cv_path}`}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 transition-colors"

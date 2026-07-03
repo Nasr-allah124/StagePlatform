@@ -54,7 +54,7 @@ export default function Login() {
   setStatus({ loading: true, error: "", success: "" });
 
   const API_BASE_URL =
-    (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api").replace(
+    (import.meta.env.VITE_API_BASE_URL || "http://localhost:8010/api").replace(
       /\/$/,
       ""
     );
@@ -83,7 +83,7 @@ export default function Login() {
     loading: false,
     error:
       err instanceof TypeError
-        ? "Impossible de contacter le serveur. Vérifie que le backend PHP tourne (php -S localhost:8000)."
+        ? "Impossible de contacter le serveur. Vérifie que le backend PHP tourne (php -S localhost:8010)."
         : err?.message || "Erreur inconnue",
     success: "",
   });
